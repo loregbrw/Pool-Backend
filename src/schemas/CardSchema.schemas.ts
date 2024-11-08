@@ -15,9 +15,8 @@ export default class CardSchema {
         tagsId: z.array(z.string().uuid())
     });
 
-    public static update = CardSchema.creation.partial(); // transforma todos os campos em opcionais
+    public static update = CardSchema.creation.partial();
 }
 
-// Aqui usamos o z.infer para gerar os tipos automaticamente
 export type TCardCreation = z.infer<typeof CardSchema.creation>;
 export type TCardUpdate = z.infer<typeof CardSchema.update>;

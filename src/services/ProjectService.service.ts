@@ -141,11 +141,11 @@ export default class ProjectService {
             return { project: { ...project, user: undefined, permissions: undefined }, permission: permission.permission?.toString()! };
         }
 
-        return { project: { ...project, user: undefined, permissions: undefined }, permission: "Own"};
+        return { project: { ...project, user: undefined, permissions: undefined }, permission: "Own" };
     };
 
 
-    public static getByUser = async (userId: string): Promise<{ project?: Project, status?: string }[]> => {
+    public static getByUser = async (userId: string, search: string): Promise<{ project?: Project, status?: string }[]> => {
 
         const userRepo = AppDataSource.getRepository(User);
 
@@ -168,7 +168,9 @@ export default class ProjectService {
         if (!user)
             throw new AppError("Problem authenticating user!", 401);
 
-        const ownProjects = user.projects || [];
+        const ownProjects = (user.projects || []).filter(project =>
+            project.name?.toLowerCase().includes(search!.toLowerCase())
+        );
 
         const ownProjectsWithStatus = ownProjects.map(project => ({
             project,
@@ -177,13 +179,17 @@ export default class ProjectService {
 
         const permissions = user.permissions || [];
 
-        const permissionProjects = permissions.map(permission => ({
-            project: permission.project,
-            status: permission.permission?.toString()
-        }));
+        const permissionProjects = permissions
+            .filter(permission =>
+                permission.project?.name?.toLowerCase().includes(search!.toLowerCase())
+            )
+            .map(permission => ({
+                project: permission.project,
+                status: permission.permission?.toString(),
+            }));
 
         const allProjects = [...ownProjectsWithStatus, ...permissionProjects];
-
+        
         return allProjects;
     }
 }
