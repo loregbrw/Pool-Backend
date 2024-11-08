@@ -4,11 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node src/server.ts",
-    "build": "tsc",
-    "serve": "node dist/app.js",
+    "dev": "cross-env NODE_ENV=dev ts-node-dev --rs --cls --ignore-watch node_modules src/server.ts",
+    "test": "cross-env NODE_ENV=test SECRET_KEY=secret_key EXPIRES_IN=1h jest --verbose --runInBand",
     "typeorm": "typeorm-ts-node-commonjs",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "db:build": "ts-node-dev src/db/build/index.ts",
+    "db:backup": "ts-node-dev src/db/backup/index.ts",
+    "build": "tsc",
+    "start": "node dist/src/server.js"
   },
   "keywords": [],
   "author": "",
