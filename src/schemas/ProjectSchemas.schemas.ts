@@ -5,7 +5,7 @@ export default class ProjectSchema {
     public static creation = z.object({
         name: z.string().max(255),
         description: z.string().max(500),
-        tagId: z.string().uuid(),
+        tagId: z.string().uuid().optional(),
         users: z.array(z.string().uuid()),
         sprintInitialDate: z.preprocess(
             (arg) => (typeof arg === 'string' || arg instanceof Date ? new Date(arg) : undefined),
