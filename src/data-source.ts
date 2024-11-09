@@ -30,10 +30,14 @@ const buildSettings = (): DataSourceOptions => {
     
     const database: string | undefined = process.env.DB_DATABASE;
     if (!database) throw new Error("Missing env var: 'DB_DATABASE'");
+
+    const port: number | undefined = Number(process.env.DB_PORT);
+    if (!port) throw new Error("Missing env var: 'DB_PORT'");
     
     return {
         type: dbType as "postgres" | "mssql",
         host: host,
+        port: port,
         username: username,
         password: password,
         database: database,
