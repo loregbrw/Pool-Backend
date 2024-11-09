@@ -4,9 +4,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const UsersConstroller_controller_1 = __importDefault(require("../controllers/UsersConstroller.controller"));
-const ValidateMiddleware_middleware_1 = __importDefault(require("../middlewares/ValidateMiddleware.middleware"));
-const UserSchemas_schemas_1 = __importDefault(require("../schemas/UserSchemas.schemas"));
+const UsersConstroller_1 = __importDefault(require("../controllers/UsersConstroller"));
+const Validate_middleware_1 = __importDefault(require("../middlewares/Validate.middleware"));
+const UserSchemas_1 = __importDefault(require("../schemas/UserSchemas"));
 const authRouter = (0, express_1.Router)();
-authRouter.post("/", ValidateMiddleware_middleware_1.default.validadeBody(UserSchemas_schemas_1.default.login), UsersConstroller_controller_1.default.login);
+authRouter.post("/", Validate_middleware_1.default.validadeBody(UserSchemas_1.default.login), UsersConstroller_1.default.login);
 exports.default = authRouter;

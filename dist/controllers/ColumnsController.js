@@ -14,16 +14,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 const errors_1 = __importDefault(require("../errors"));
-const SectionService_1 = __importDefault(require("../services/SectionService"));
-class SectionsController {
+const ColumnService_1 = __importDefault(require("../services/ColumnService"));
+class ColumnsController {
 }
-_a = SectionsController;
-SectionsController.create = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+_a = ColumnsController;
+ColumnsController.create = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userSession = req.userSession;
     if (!userSession)
         throw new errors_1.default("Unathorized!", 401);
-    // verify if there is access
-    const section = yield SectionService_1.default.create(req.body);
-    return res.status(201).json({ card: section });
+    const column = yield ColumnService_1.default.create(req.body, userSession.id);
+    return res.status(201).json({ column });
 });
-exports.default = SectionsController;
+ColumnsController.update = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userSession = req.userSession;
+    if (!userSession)
+        throw new errors_1.default("Unathorized!", 401);
+    const column = yield ColumnService_1.default.update(req.params.id, req.body, userSession.id);
+    return res.status(201).json({ column });
+});
+exports.default = ColumnsController;

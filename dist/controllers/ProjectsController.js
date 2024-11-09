@@ -14,36 +14,30 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 const errors_1 = __importDefault(require("../errors"));
-const SprintService_1 = __importDefault(require("../services/SprintService"));
-class SprintsController {
+const ProjectService_1 = __importDefault(require("../services/ProjectService"));
+class ProjectsController {
 }
-_a = SprintsController;
-SprintsController.create = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+_a = ProjectsController;
+ProjectsController.create = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userSession = req.userSession;
     if (!userSession)
         throw new errors_1.default("Unathorized!", 401);
-    const sprint = yield SprintService_1.default.create(req.body, userSession.id);
-    return res.status(201).json({ sprint });
+    const project = yield ProjectService_1.default.create(req.body, userSession.id);
+    return res.status(201).json({ project });
 });
-SprintsController.update = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+ProjectsController.get = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userSession = req.userSession;
     if (!userSession)
         throw new errors_1.default("Unathorized!", 401);
-    const sprint = yield SprintService_1.default.update(req.params.id, req.body, userSession.id);
-    return res.status(201).json({ sprint });
+    const search = typeof req.query.search === "string" ? req.query.search : "";
+    const projects = yield ProjectService_1.default.getByUser(userSession.id, search);
+    return res.status(200).json({ projects });
 });
-// public static get = async (req: Request, res: Response) => {
-//     const userSession = (req as any).userSession;
-//     if (!userSession)
-//         throw new AppError("Unathorized!", 401);
-//     const projects = await ProjectService.getByUser(userSession.id);
-//     return res.status(200).json({ projects });
-// }
-SprintsController.getById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+ProjectsController.getById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userSession = req.userSession;
     if (!userSession)
         throw new errors_1.default("Unathorized!", 401);
-    const sprint = yield SprintService_1.default.getById(req.params.id);
-    return res.status(200).json({ sprint });
+    const project = yield ProjectService_1.default.getById(req.params.id, userSession.id);
+    return res.status(200).json({ project });
 });
-exports.default = SprintsController;
+exports.default = ProjectsController;

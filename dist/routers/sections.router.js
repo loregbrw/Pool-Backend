@@ -4,9 +4,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const ValidateMiddleware_middleware_1 = __importDefault(require("../middlewares/ValidateMiddleware.middleware"));
-const SectionSchema_schemas_1 = __importDefault(require("../schemas/SectionSchema.schemas"));
+const Validate_middleware_1 = __importDefault(require("../middlewares/Validate.middleware"));
+const SectionSchema_1 = __importDefault(require("../schemas/SectionSchema"));
 const SectionsController_1 = __importDefault(require("../controllers/SectionsController"));
 const sectionsRouter = (0, express_1.Router)();
-sectionsRouter.post("/", ValidateMiddleware_middleware_1.default.validadeBody(SectionSchema_schemas_1.default.creation), ValidateMiddleware_middleware_1.default.validadeToken, SectionsController_1.default.create);
+sectionsRouter.post("/", Validate_middleware_1.default.validadeBody(SectionSchema_1.default.creation), Validate_middleware_1.default.validadeToken, SectionsController_1.default.create);
 exports.default = sectionsRouter;

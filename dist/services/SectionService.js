@@ -13,17 +13,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
+const data_source_1 = __importDefault(require("../data-source"));
+const Section_entity_1 = __importDefault(require("../entities/Section.entity"));
 const errors_1 = __importDefault(require("../errors"));
-const SectionService_1 = __importDefault(require("../services/SectionService"));
-class SectionsController {
+const CardsColumn_entity_1 = __importDefault(require("../entities/CardsColumn.entity"));
+class SectionService {
 }
-_a = SectionsController;
-SectionsController.create = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const userSession = req.userSession;
-    if (!userSession)
-        throw new errors_1.default("Unathorized!", 401);
-    // verify if there is access
-    const section = yield SectionService_1.default.create(req.body);
-    return res.status(201).json({ card: section });
+_a = SectionService;
+SectionService.create = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const sectionRepo = data_source_1.default.getRepository(Section_entity_1.default);
+    const columnRepo = data_source_1.default.getRepository(CardsColumn_entity_1.default);
+    const column = yield columnRepo.findOne({ where: { id: payload.columnId } });
+    if (!column)
+        throw new errors_1.default("Column not found!", 404);
+    const section = sectionRepo.create(Object.assign(Object.assign({}, payload), { column: column }));
+    const createdSection = yield sectionRepo.save(section);
+    return createdSection;
 });
-exports.default = SectionsController;
+exports.default = SectionService;

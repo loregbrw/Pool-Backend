@@ -14,16 +14,26 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 const errors_1 = __importDefault(require("../errors"));
-const SectionService_1 = __importDefault(require("../services/SectionService"));
-class SectionsController {
+const UserSession_1 = __importDefault(require("../sessions/UserSession"));
+const AuthService_1 = __importDefault(require("../services/AuthService"));
+class Validate {
 }
-_a = SectionsController;
-SectionsController.create = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const userSession = req.userSession;
-    if (!userSession)
-        throw new errors_1.default("Unathorized!", 401);
-    // verify if there is access
-    const section = yield SectionService_1.default.create(req.body);
-    return res.status(201).json({ card: section });
+_a = Validate;
+Validate.validadeBody = (schema) => (req, res, next) => {
+    const validated = schema.parse(req.body);
+    req.body = validated;
+    return next();
+};
+Validate.validadeToken = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const auth = req.headers.authorization;
+    if (!auth)
+        throw new errors_1.default("Missing baerer token!", 401);
+    const [_baerer, token] = auth.split(" ");
+    const userId = yield AuthService_1.default.verifyToken(token);
+    if (!userId)
+        throw new errors_1.default("Invalid token!", 401);
+    const userSession = new UserSession_1.default(userId);
+    req.userSession = userSession;
+    next();
 });
-exports.default = SectionsController;
+exports.default = Validate;

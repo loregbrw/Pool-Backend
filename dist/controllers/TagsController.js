@@ -14,36 +14,36 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 const errors_1 = __importDefault(require("../errors"));
-const SprintService_1 = __importDefault(require("../services/SprintService"));
-class SprintsController {
+const TagService_1 = __importDefault(require("../services/TagService"));
+class TagsController {
 }
-_a = SprintsController;
-SprintsController.create = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+_a = TagsController;
+TagsController.create = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userSession = req.userSession;
     if (!userSession)
         throw new errors_1.default("Unathorized!", 401);
-    const sprint = yield SprintService_1.default.create(req.body, userSession.id);
-    return res.status(201).json({ sprint });
+    const tag = yield TagService_1.default.create(req.body, userSession.id);
+    return res.status(201).json({ tag });
 });
-SprintsController.update = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+TagsController.update = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userSession = req.userSession;
     if (!userSession)
         throw new errors_1.default("Unathorized!", 401);
-    const sprint = yield SprintService_1.default.update(req.params.id, req.body, userSession.id);
-    return res.status(201).json({ sprint });
+    const tag = yield TagService_1.default.update(req.params.id, req.body, userSession.id);
+    return res.status(200).json({ tag });
 });
-// public static get = async (req: Request, res: Response) => {
-//     const userSession = (req as any).userSession;
-//     if (!userSession)
-//         throw new AppError("Unathorized!", 401);
-//     const projects = await ProjectService.getByUser(userSession.id);
-//     return res.status(200).json({ projects });
-// }
-SprintsController.getById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+TagsController.delete = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userSession = req.userSession;
     if (!userSession)
         throw new errors_1.default("Unathorized!", 401);
-    const sprint = yield SprintService_1.default.getById(req.params.id);
-    return res.status(200).json({ sprint });
+    yield TagService_1.default.delete(req.params.id, userSession.id);
+    return res.status(204).send();
 });
-exports.default = SprintsController;
+TagsController.getByUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userSession = req.userSession;
+    if (!userSession)
+        throw new errors_1.default("Unathorized!", 401);
+    const tags = yield TagService_1.default.getByUser(userSession.id);
+    return res.status(200).json({ tags });
+});
+exports.default = TagsController;
