@@ -4,6 +4,5 @@
 
 set -o errexit
 
-npm
-npm build
-npm typeorm migration:run -d ./src/data-source
+npm run build
+npm run typeorm migration:run -- -d ./src/data-source
