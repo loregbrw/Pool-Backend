@@ -6,9 +6,9 @@ import Tag from "../entities/Tag.entity";
 import User from "../entities/User.entity";
 import { EPermission } from "../enums/EPermission.enum";
 import AppError from "../errors";
-import { TProjectCreation, TProjectUpdate } from "../schemas/ProjectSchemas.schemas";
-import { TSprintCreation } from "../schemas/SprintSchemas.schemas";
-import SprintService from "./SprintService.service";
+import { TProjectCreation, TProjectUpdate } from "../schemas/ProjectSchemas";
+import { TSprintCreation } from "../schemas/SprintSchemas";
+import SprintService from "./SprintService";
 
 export default class ProjectService {
 

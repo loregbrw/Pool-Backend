@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import AppError from "../errors";
-import ColumnService from "../services/ColumnService.service";
+import ColumnService from "../services/ColumnService";
 
 export default class ColumnsController {
 

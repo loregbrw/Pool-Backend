@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import AuthService from "../services/AuthService.service";
-import UserService from "../services/UserService.service";
+import AuthService from "../services/AuthService";
+import UserService from "../services/UserService";
 import AppError from "../errors";
 
 export default class UsersController {

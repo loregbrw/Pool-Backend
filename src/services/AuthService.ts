@@ -5,7 +5,7 @@ import AppError from "../errors";
 import { compare } from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { AES, enc } from "crypto-ts";
-import { TUserLogin } from "../schemas/UserSchemas.schemas";
+import { TUserLogin } from "../schemas/UserSchemas";
 
 export default class AuthService {
     public static login = async (payload: TUserLogin): Promise<string> => {

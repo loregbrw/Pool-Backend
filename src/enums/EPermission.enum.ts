@@ -1,5 +1,3 @@
-import AppError from "../errors";
-
 export enum EPermission {
     VIEWER,
     EDITOR

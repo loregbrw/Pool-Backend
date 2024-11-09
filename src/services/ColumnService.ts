@@ -3,7 +3,7 @@
     import Sprint from "../entities/Sprint.entity";
     import User from "../entities/User.entity";
     import AppError from "../errors";
-import { TColumnCreation, TColumnUpdate } from "../schemas/ColumnSchemas.schemas";
+import { TColumnCreation, TColumnUpdate } from "../schemas/ColumnSchemas";
 
     export default class ColumnService {
 

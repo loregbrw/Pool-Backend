@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export default class CardSchema {
+export default class CardSchemas {
     public static creation = z.object({
         name: z.string().max(255),
         description: z.string().max(5000).optional(),
@@ -15,8 +15,8 @@ export default class CardSchema {
         tagsId: z.array(z.string().uuid())
     });
 
-    public static update = CardSchema.creation.partial();
+    public static update = CardSchemas.creation.partial();
 }
 
-export type TCardCreation = z.infer<typeof CardSchema.creation>;
-export type TCardUpdate = z.infer<typeof CardSchema.update>;
+export type TCardCreation = z.infer<typeof CardSchemas.creation>;
+export type TCardUpdate = z.infer<typeof CardSchemas.update>;

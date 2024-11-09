@@ -3,7 +3,7 @@ import Project from "../entities/Project.entity";
 import Sprint from "../entities/Sprint.entity";
 import User from "../entities/User.entity";
 import AppError from "../errors";
-import { TSprintCreation, TSprintUpdate } from "../schemas/SprintSchemas.schemas";
+import { TSprintCreation, TSprintUpdate } from "../schemas/SprintSchemas";
 
 export default class SprintService {
 

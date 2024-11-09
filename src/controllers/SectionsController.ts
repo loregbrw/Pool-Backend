@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import AppError from "../errors";
-import SectionService from "../services/SectionService.service";
+import SectionService from "../services/SectionService";
 
 export default class SectionsController {
 

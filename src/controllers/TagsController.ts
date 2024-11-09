@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import AppError from "../errors";
-import TagService from "../services/TagService.service";
+import TagService from "../services/TagService";
 
 export default class TagsController {
     

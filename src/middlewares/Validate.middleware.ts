@@ -2,9 +2,9 @@ import { NextFunction, Request, Response } from "express";
 import { ZodTypeAny } from "zod";
 import AppError from "../errors";
 import UserSession from "../sessions/UserSession";
-import AuthService from "../services/AuthService.service";
+import AuthService from "../services/AuthService";
 
-export default class ValidateMiddleware {
+export default class Validate {
     
     public static validadeBody = (schema: ZodTypeAny) => (req: Request, res: Response, next: NextFunction) => {
 

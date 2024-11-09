@@ -3,7 +3,7 @@ import AppDataSource from "../data-source";
 import User from "../entities/User.entity";
 import AppError from "../errors";
 import { genSalt, hash } from "bcryptjs";
-import { TUserCreation, TUserUpdate } from "../schemas/UserSchemas.schemas";
+import { TUserCreation, TUserUpdate } from "../schemas/UserSchemas";
 
 export default class UserService {
     public static create = async (payload: TUserCreation): Promise<User> => {

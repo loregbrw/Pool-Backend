@@ -2,7 +2,7 @@ import AppDataSource from "../data-source";
 import Tag from "../entities/Tag.entity";
 import User from "../entities/User.entity";
 import AppError from "../errors";
-import { TTagCreation, TTagUpdate } from "../schemas/TagSchemas.schemas";
+import { TTagCreation, TTagUpdate } from "../schemas/TagSchemas";
 
 export default class TagService {
     public static create = async (payload: TTagCreation, userId: string): Promise<Tag> => {

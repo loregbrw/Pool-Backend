@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import AppError from "../errors";
-import ProjectService from "../services/ProjectService.service";
+import ProjectService from "../services/ProjectService";
 
 export default class ProjectsController {
 

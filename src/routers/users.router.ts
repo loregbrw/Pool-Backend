@@ -1,14 +1,14 @@
 import { Router } from "express";
-import UsersController from "../controllers/UsersConstroller.controller";
-import ValidateMiddleware from "../middlewares/ValidateMiddleware.middleware";
-import UserSchema from "../schemas/UserSchemas.schemas";
+import UsersController from "../controllers/UsersConstroller";
+import Validate from "../middlewares/Validate.middleware";
+import UserSchema from "../schemas/UserSchemas";
 
 const usersRouter: Router = Router();
 
-usersRouter.post("/", ValidateMiddleware.validadeBody(UserSchema.creation), UsersController.create);
-usersRouter.patch("/:id", ValidateMiddleware.validadeBody(UserSchema.update), ValidateMiddleware.validadeToken, UsersController.update);
-usersRouter.delete("/", ValidateMiddleware.validadeToken, UsersController.delete);
-usersRouter.get("/", ValidateMiddleware.validadeToken, UsersController.get);
-usersRouter.get("/pag", ValidateMiddleware.validadeToken, UsersController.getPagination);
+usersRouter.post("/", Validate.validadeBody(UserSchema.creation), UsersController.create);
+usersRouter.patch("/:id", Validate.validadeBody(UserSchema.update), Validate.validadeToken, UsersController.update);
+usersRouter.delete("/", Validate.validadeToken, UsersController.delete);
+usersRouter.get("/", Validate.validadeToken, UsersController.get);
+usersRouter.get("/pag", Validate.validadeToken, UsersController.getPagination);
 
 export default usersRouter;

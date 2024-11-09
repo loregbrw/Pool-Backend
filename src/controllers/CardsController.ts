@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import AppError from "../errors";
-import CardService from "../services/CardService.service";
+import CardService from "../services/CardService";
 
 export default class CardsController {
 

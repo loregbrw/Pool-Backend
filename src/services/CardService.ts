@@ -4,7 +4,7 @@ import AppError from "../errors";
 import Section from "../entities/Section.entity";
 import CardsColumn from "../entities/CardsColumn.entity";
 import User from "../entities/User.entity";
-import { TCardCreation, TCardUpdate } from "../schemas/CardSchema.schemas";
+import { TCardCreation, TCardUpdate } from "../schemas/CardSchemas";
 
 export default class CardService {
 

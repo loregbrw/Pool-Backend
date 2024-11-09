@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import AppError from "../errors";
-import SprintService from "../services/SprintService.service";
+import SprintService from "../services/SprintService";
 
 export default class SprintsController {
 
