@@ -10,7 +10,7 @@
     "db:build": "ts-node-dev src/db/build/index.ts",
     "db:backup": "ts-node-dev src/db/backup/index.ts",
     "build": "tsc",
-    "start": "node dist/server.ts"
+    "start": "node /server.ts"
   },
   "keywords": [],
   "author": "",
