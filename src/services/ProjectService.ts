@@ -24,10 +24,7 @@ export default class ProjectService {
         if (!user)
             throw new AppError("Problem authenticating user!", 401);
 
-        const tag = await tagRepo.findOne({ where: { id: payload.tagId } });
-
-        if (!tag)
-            throw new AppError("Invalid Tag!", 400);
+        const tag = await tagRepo.findOne({ where: { id: payload.tagId } }) || undefined;
 
         const project = projectRepo.create({ name: payload.name, description: payload.description, status: false, tag: tag, user: user });
         const createdProject = await projectRepo.save(project);
@@ -39,7 +36,7 @@ export default class ProjectService {
             projectId: createdProject.id!
         };
 
-        const sprint = await SprintService.create(sprintData, userId);
+        await SprintService.create(sprintData, userId);
 
         for (const id of payload.users) {
 
