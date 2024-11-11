@@ -51,11 +51,6 @@ export default class UsersController {
     }
 
     public static exists = async (req: Request, res: Response) => {
-        const userSession = (req as any).userSession;
-    
-        if (!userSession)
-            throw new AppError("Unathorized!", 401);
-
         const exists = await UserService.exists(String(req.query.str));
         return res.status(200).json({ exists });
     }
