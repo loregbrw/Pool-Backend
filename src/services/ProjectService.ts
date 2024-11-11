@@ -1,14 +1,14 @@
-import AppDataSource from "../data-source";
-import Permission from "../entities/Permission.entity";
-import Project from "../entities/Project.entity";
-import Sprint from "../entities/Sprint.entity";
+import AppError from "../errors";
 import Tag from "../entities/Tag.entity";
 import User from "../entities/User.entity";
-import { EPermission } from "../enums/EPermission.enum";
-import AppError from "../errors";
-import { TProjectCreation, TProjectUpdate } from "../schemas/ProjectSchemas";
-import { TSprintCreation } from "../schemas/SprintSchemas";
+import AppDataSource from "../data-source";
 import SprintService from "./SprintService";
+import Permission from "../entities/Permission.entity";
+import Project from "../entities/Project.entity";
+
+import { EPermission } from "../enums/EPermission.enum";
+import { TSprintCreation } from "../schemas/SprintSchemas";
+import { TProjectCreation, TProjectUpdate } from "../schemas/ProjectSchemas";
 
 export default class ProjectService {
 
@@ -142,10 +142,10 @@ export default class ProjectService {
     };
 
 
-    public static getByUser = async (userId: string, search: string): Promise<{ project?: Project, status?: string }[]> => {
+    public static getByUser = async (userId: string, search: string, tagId?: string): Promise<{ project?: Project, status?: string }[]> => {
 
         const userRepo = AppDataSource.getRepository(User);
-
+    
         const user = await userRepo.findOne({
             where: { id: userId },
             relations: {
@@ -161,32 +161,35 @@ export default class ProjectService {
                 }
             }
         });
-
+    
         if (!user)
             throw new AppError("Problem authenticating user!", 401);
-
+    
         const ownProjects = (user.projects || []).filter(project =>
-            project.name?.toLowerCase().includes(search!.toLowerCase())
+            project.name?.toLowerCase().includes(search.toLowerCase()) &&
+            (!tagId || (project.tag && project.tag.id === tagId))
         );
-
+    
         const ownProjectsWithStatus = ownProjects.map(project => ({
             project,
             status: "Owner",
         }));
-
+    
         const permissions = user.permissions || [];
-
+    
         const permissionProjects = permissions
             .filter(permission =>
-                permission.project?.name?.toLowerCase().includes(search!.toLowerCase())
+                permission.project?.name?.toLowerCase().includes(search.toLowerCase()) &&
+                (!tagId || (permission.project.tag && permission.project.tag.id === tagId))
             )
             .map(permission => ({
                 project: permission.project,
                 status: permission.permission?.toString(),
             }));
-
+    
         const allProjects = [...ownProjectsWithStatus, ...permissionProjects];
-        
+    
         return allProjects;
     }
+    
 }

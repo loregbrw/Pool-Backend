@@ -1,7 +1,8 @@
+import AppError from "../errors";
 import AppDataSource from "../data-source";
 import Section from "../entities/Section.entity";
-import AppError from "../errors";
 import CardsColumn from "../entities/CardsColumn.entity";
+
 import { TSectionCreation } from "../schemas/SectionSchema";
 
 export default class SectionService {

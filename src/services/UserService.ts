@@ -1,7 +1,8 @@
-import { Like } from "typeorm";
-import AppDataSource from "../data-source";
-import User from "../entities/User.entity";
 import AppError from "../errors";
+import User from "../entities/User.entity";
+import AppDataSource from "../data-source";
+
+import { Like } from "typeorm";
 import { genSalt, hash } from "bcryptjs";
 import { TUserCreation, TUserUpdate } from "../schemas/UserSchemas";
 
@@ -69,7 +70,7 @@ export default class UserService {
     }
 
     public static getPagination = async (page: number, size: number, search: string): Promise<Partial<User>[]> => {
-        
+
         const userRepo = AppDataSource.getRepository(User);
 
         const users = await userRepo.find({

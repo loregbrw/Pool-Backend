@@ -1,9 +1,10 @@
-import AppDataSource from "../data-source";
-import Card from "../entities/Card.entity";
 import AppError from "../errors";
+import User from "../entities/User.entity";
+import Card from "../entities/Card.entity";
+import AppDataSource from "../data-source";
 import Section from "../entities/Section.entity";
 import CardsColumn from "../entities/CardsColumn.entity";
-import User from "../entities/User.entity";
+
 import { TCardCreation, TCardUpdate } from "../schemas/CardSchemas";
 
 export default class CardService {

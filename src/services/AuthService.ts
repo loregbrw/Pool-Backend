@@ -1,9 +1,11 @@
 import "dotenv/config";
+
+import jwt from "jsonwebtoken";
+import AppError from "../errors";
 import User from "../entities/User.entity";
 import AppDataSource from "../data-source";
-import AppError from "../errors";
+
 import { compare } from "bcryptjs";
-import jwt from "jsonwebtoken";
 import { AES, enc } from "crypto-ts";
 import { TUserLogin } from "../schemas/UserSchemas";
 
@@ -44,7 +46,7 @@ export default class AuthService {
         const secret = process.env.SECRET_KEY;
         if (!secret)
             throw new AppError("SECRET_KEY is not defined in environment variables!", 500);
-    
+
         try {
             const decoded = jwt.verify(token, secret) as { id: string };
             return decoded.id || null;

@@ -1,17 +1,18 @@
-import AppDataSource from "../data-source";
+import AppError from "../errors";
 import Tag from "../entities/Tag.entity";
 import User from "../entities/User.entity";
-import AppError from "../errors";
+import AppDataSource from "../data-source";
+
 import { TTagCreation, TTagUpdate } from "../schemas/TagSchemas";
 
 export default class TagService {
     public static create = async (payload: TTagCreation, userId: string): Promise<Tag> => {
-        
+
         const tagRepo = AppDataSource.getRepository(Tag);
         const userRepo = AppDataSource.getRepository(User);
 
         const user = await userRepo.findOne({ where: { id: userId } });
-        
+
         if (!user)
             throw new AppError("Problem authenticating user!", 401);
 
@@ -22,7 +23,7 @@ export default class TagService {
     }
 
     public static update = async (id: string, payload: TTagUpdate, userId: string): Promise<Tag> => {
-        
+
         const tagRepo = AppDataSource.getRepository(Tag);
 
         const tag = await tagRepo.findOne({

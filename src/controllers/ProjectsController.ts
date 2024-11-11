@@ -23,8 +23,9 @@ export default class ProjectsController {
             throw new AppError("Unathorized!", 401);
 
         const search = typeof req.query.search === "string" ? req.query.search : "";
+        const tagId = typeof req.query.tagId === "string" ? req.query.tagId : undefined;
 
-        const projects = await ProjectService.getByUser(userSession.id, search);
+        const projects = await ProjectService.getByUser(userSession.id, search, tagId);
         return res.status(200).json({ projects });
     }
 
