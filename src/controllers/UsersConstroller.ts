@@ -32,7 +32,6 @@ export default class UsersController {
 
         const userSession = (req as any).userSession;
     
-        console.log(userSession);
         if (!userSession)
             throw new AppError("Unathorized!", 401);
 
@@ -49,6 +48,16 @@ export default class UsersController {
 
         await UserService.delete(userSession.id);
         return res.status(204).send();
+    }
+
+    public static exists = async (req: Request, res: Response) => {
+        const userSession = (req as any).userSession;
+    
+        if (!userSession)
+            throw new AppError("Unathorized!", 401);
+
+        const exists = await UserService.exists(String(req.query.str));
+        return res.status(200).json({ exists });
     }
 
     public static getPagination = async (req: Request, res: Response) => {

@@ -9,6 +9,7 @@ usersRouter.post("/", Validate.validadeBody(UserSchema.creation), UsersControlle
 usersRouter.patch("/:id", Validate.validadeBody(UserSchema.update), Validate.validadeToken, UsersController.update);
 usersRouter.delete("/", Validate.validadeToken, UsersController.delete);
 usersRouter.get("/", Validate.validadeToken, UsersController.get);
+usersRouter.get("/exists/:str", Validate.validadeToken, UsersController.exists);
 usersRouter.get("/pag", Validate.validadeToken, UsersController.getPagination);
 
 export default usersRouter;

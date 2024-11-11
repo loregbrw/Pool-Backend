@@ -42,6 +42,19 @@ export default class UserService {
         return { ...createdUser, password: undefined };
     }
 
+    public static exists = async (str: string): Promise<boolean> => {
+        const userRepo = AppDataSource.getRepository(User);
+
+        const find = await userRepo.findOne({
+            where: [
+                { email: str },
+                { username: str }
+            ]
+        })
+
+        return find != null;
+    }
+
     public static update = async (id: string, payload: TUserUpdate): Promise<User> => {
 
         const userRepo = AppDataSource.getRepository(User);
