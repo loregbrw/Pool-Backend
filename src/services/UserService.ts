@@ -44,16 +44,15 @@ export default class UserService {
 
     public static exists = async (str: string): Promise<boolean> => {
         const userRepo = AppDataSource.getRepository(User);
-
-        const find = await userRepo.findOne({
-            where: [
-                { email: str },
-                { username: str }
-            ]
-        })
-
-        return find != null;
+    
+        const find = await userRepo.findOneBy([
+            { email: str },
+            { username: str }
+        ]);
+    
+        return find !== null;
     }
+    
 
     public static update = async (id: string, payload: TUserUpdate): Promise<User> => {
 
