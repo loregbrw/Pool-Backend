@@ -11,8 +11,6 @@ export default class CardsController {
         if (!userSession)
             throw new AppError("Unathorized!", 401);
 
-        // verify if there is access
-
         const card = await CardService.create(req.body);
         return res.status(201).json({ card });
     };
@@ -23,8 +21,6 @@ export default class CardsController {
 
         if (!userSession)
             throw new AppError("Unathorized!", 401);
-
-        // verify if there is access
 
         const card = await CardService.update(req.params.id, req.body, userSession.id);
         return res.status(201).json({ card });
@@ -37,8 +33,6 @@ export default class CardsController {
         if (!userSession)
             throw new AppError("Unathorized!", 401);
 
-        // verify if there is access
-
         const card = await CardService.getById(req.params.id);
         return res.status(201).json({ card });
     }
@@ -49,8 +43,6 @@ export default class CardsController {
 
         if (!userSession)
             throw new AppError("Unathorized!", 401);
-
-        // verify if there is access
 
         const cards = await CardService.getBySprintId(req.params.sprintId);
         return res.status(201).json({ cards });

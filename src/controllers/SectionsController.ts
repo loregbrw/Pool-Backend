@@ -11,8 +11,6 @@ export default class SectionsController {
         if (!userSession)
             throw new AppError("Unathorized!", 401);
 
-        // verify if there is access
-
         const section = await SectionService.create(req.body);
         return res.status(201).json({ card: section });
     }

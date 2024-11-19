@@ -57,7 +57,10 @@ export default class UsersController {
 
     public static getPagination = async (req: Request, res: Response) => {
 
-        // require token to get users!
+        const userSession = (req as any).userSession;
+
+        if (!userSession)
+            throw new AppError("Unathorized!", 401);
 
         const { page = 1, size = 10, search = "" } = req.query;
 
