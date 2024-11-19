@@ -52,6 +52,7 @@ export default class UsersController {
 
     public static exists = async (req: Request, res: Response) => {
         const exists = await UserService.exists(String(req.query.str));
+        console.log(String(req.query.str));
         return res.status(200).json({ exists });
     }
 
