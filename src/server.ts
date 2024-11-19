@@ -3,7 +3,6 @@ import AppDataSource from "./data-source";
 import app from "./app";
 
 const serverFacade = async () => {
-
     await AppDataSource.initialize();
     console.log("\nData source connected.");
 
@@ -11,6 +10,13 @@ const serverFacade = async () => {
 
     app.listen(PORT, () => {
         console.log(`\nServer executing on http://localhost:${PORT}/`);
+    });
+    
+    process.on("SIGTERM", async () => {
+        console.log("\nShutting down...");
+        await AppDataSource.destroy();
+        console.log("Data source disconnected.");
+        process.exit(0);
     });
 }
 

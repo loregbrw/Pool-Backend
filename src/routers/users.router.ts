@@ -1,7 +1,8 @@
-import { Router } from "express";
-import UsersController from "../controllers/UsersController";
-import Validate from "../middlewares/Validate.middleware";
 import UserSchema from "../schemas/UserSchemas";
+import Validate from "../middlewares/Validate.middleware";
+import UsersController from "../controllers/UsersController";
+
+import { Router } from "express";
 
 const usersRouter: Router = Router();
 

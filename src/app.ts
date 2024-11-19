@@ -1,8 +1,11 @@
-import express from "express";
-import cors from "cors";
-
 import "reflect-metadata";
 import "express-async-errors";
+
+import cors from "cors";
+import express from "express";
+import rateLimit from "express-rate-limit";
+
+
 import usersRouter from "./routers/users.router";
 import authRouter from "./routers/auth.router";
 import handleError from "./middlewares/handleError.middleware";
@@ -15,8 +18,21 @@ import sectionsRouter from "./routers/sections.router";
 
 const app = express();
 
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+});
+
+app.use(limiter);
+
 app.use(express.json());
-app.use(cors());
+app.use(cors(
+    {
+        origin: process.env.CORS_ORIGIN || "http://localhost:3000",
+        credentials: true
+    }
+));
+
 
 app.use("/auth", authRouter);
 app.use("/users", usersRouter);

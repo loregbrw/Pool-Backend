@@ -28,6 +28,7 @@
   "dependencies": {
     "@nestjs/common": "^10.4.3",
     "@types/bcrypt": "^5.0.2",
+    "@types/express-rate-limit": "^6.0.2",
     "backend": "file:",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
@@ -35,6 +36,7 @@
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
     "express-async-errors": "^3.1.1",
+    "express-rate-limit": "^7.4.1",
     "jsonwebtoken": "^9.0.2",
     "mssql": "^10.0.4",
     "path": "^0.12.7",
