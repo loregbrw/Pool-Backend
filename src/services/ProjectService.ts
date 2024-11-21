@@ -24,7 +24,13 @@ export default class ProjectService {
         if (!user)
             throw new AppError("Problem authenticating user!", 401);
 
-        const tag = await tagRepo.findOne({ where: { id: payload.tagId } }) || undefined;
+        let tag;
+
+        if (payload.tagId) {
+            tag = await tagRepo.findOne({ where: { id: payload.tagId } });
+            if (!tag)
+                throw new AppError("Tag not found!", 404);
+        }
 
         const project = projectRepo.create({ name: payload.name, description: payload.description, status: false, tag: tag, user: user });
         const createdProject = await projectRepo.save(project);
