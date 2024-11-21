@@ -17,21 +17,15 @@ import sectionsRouter from "./routers/sections.router";
 
 const app = express();
 
-app.set('trust proxy', 1); 
+// const limiter = rateLimit({
+//     windowMs: 15 * 60 * 1000,
+//     max: 100,
+// });
 
-const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 100,
-});
-
-app.use(limiter);
+// app.use(limiter);
 
 app.use(express.json());
-app.use(cors({
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-    allowedHeaders: ["Authorization"]
-}));
+app.use(cors());
 
 // app.use(cors(
 //     {
