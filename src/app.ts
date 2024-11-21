@@ -25,7 +25,11 @@ const limiter = rateLimit({
 app.use(limiter);
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    allowedHeaders: ["Authorization"]
+}));
 
 // app.use(cors(
 //     {
