@@ -6,6 +6,7 @@ import SprintsController from "../controllers/SprintsController";
 const sprintsRouter = Router();
 
 sprintsRouter.get("/:id", Validate.validadeToken, SprintsController.getById);
+sprintsRouter.get("/project/:projectId", Validate.validadeToken, SprintsController.getByProjectId);
 sprintsRouter.post("/", Validate.validadeBody(SprintSchema.creation), Validate.validadeToken, SprintsController.create);
 sprintsRouter.patch("/:id", Validate.validadeBody(SprintSchema.update), Validate.validadeToken, SprintsController.update);
 

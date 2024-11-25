@@ -64,10 +64,7 @@ export default class SprintService {
         const sprint = await sprintRepo.findOne({
             where: { id: id },
             relations: {
-                columns: {
-                    cards: true,
-                    sections: true
-                }
+                columns: true
             }
         })
 
@@ -75,5 +72,23 @@ export default class SprintService {
             throw new AppError("Sprint not found!", 404);
 
         return sprint;
+    }
+
+    public static getByProject = async (projectId: string): Promise<Sprint[]> => {
+
+        const sprintRepo = AppDataSource.getRepository(Sprint);
+
+        const sprints = await sprintRepo.find({
+            where: {
+                project: {
+                    id: projectId
+                }
+            },
+            order: {
+                initialDate: 'ASC'
+            }
+        });
+
+        return sprints;
     }
 }

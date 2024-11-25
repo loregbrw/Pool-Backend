@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, NumericType, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
 import BaseEntity from "./BaseEntity.entity";
 import Project from "./Project.entity";
 import CardsColumn from "./CardsColumn.entity";

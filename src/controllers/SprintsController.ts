@@ -25,17 +25,6 @@ export default class SprintsController {
         return res.status(201).json({ sprint });
     }
 
-    // public static get = async (req: Request, res: Response) => {
-
-    //     const userSession = (req as any).userSession;
-
-    //     if (!userSession)
-    //         throw new AppError("Unathorized!", 401);
-
-    //     const projects = await ProjectService.getByUser(userSession.id);
-    //     return res.status(200).json({ projects });
-    // }
-
     public static getById = async (req: Request, res: Response) => {
         const userSession = (req as any).userSession;
 
@@ -43,6 +32,16 @@ export default class SprintsController {
             throw new AppError("Unathorized!", 401);
 
         const sprint = await SprintService.getById(req.params.id);
+        return res.status(200).json({ sprint });
+    }
+
+    public static getByProjectId = async (req: Request, res: Response) => {
+        const userSession = (req as any).userSession;
+
+        if (!userSession)
+            throw new AppError("Unathorized!", 401);
+
+        const sprint = await SprintService.getByProject(req.params.projectId);
         return res.status(200).json({ sprint });
     }
 } 
