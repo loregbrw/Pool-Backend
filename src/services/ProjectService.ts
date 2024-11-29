@@ -124,6 +124,11 @@ export default class ProjectService {
                 user: true,
                 sprints: true,
                 permissions: true
+            },
+            order: {
+                sprints: {
+                    initialDate: "ASC"
+                }
             }
         });
 
