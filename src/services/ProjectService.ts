@@ -9,6 +9,7 @@ import Project from "../entities/Project.entity";
 import { EPermission } from "../enums/EPermission.enum";
 import { TSprintCreation } from "../schemas/SprintSchemas";
 import { TProjectCreation, TProjectUpdate } from "../schemas/ProjectSchemas";
+import Sprint from "../entities/Sprint.entity";
 
 export default class ProjectService {
 
@@ -135,6 +136,21 @@ export default class ProjectService {
         if (!project)
             throw new AppError("Project not found!", 404);
 
+        const sprintRepo = AppDataSource.getRepository(Sprint);
+
+        await Promise.all(
+            project.sprints!.map(async (s) => {
+                const day = Math.floor(
+                    Math.abs(new Date().getTime() - new Date(s.initialDate!).getTime()) / (1000 * 60 * 60 * 24)
+                ) + 1;
+    
+                if (day > s.duration! && s.status !== false) {
+                    s.status = false;
+                    await sprintRepo.save(s);
+                }
+            })
+        );
+
         if (project.user?.id !== user.id) {
             const permission = await permissionRepo.findOne({
                 where: {
@@ -156,7 +172,7 @@ export default class ProjectService {
     public static getByUser = async (userId: string, search: string, tagId?: string): Promise<{ project?: Project, status?: string }[]> => {
 
         const userRepo = AppDataSource.getRepository(User);
-    
+
         const user = await userRepo.findOne({
             where: { id: userId },
             relations: {
@@ -172,22 +188,22 @@ export default class ProjectService {
                 }
             }
         });
-    
+
         if (!user)
             throw new AppError("Problem authenticating user!", 401);
-    
+
         const ownProjects = (user.projects || []).filter(project =>
             project.name?.toLowerCase().includes(search.toLowerCase()) &&
             (!tagId || (project.tag && project.tag.id === tagId))
         );
-    
+
         const ownProjectsWithStatus = ownProjects.map(project => ({
             project,
             status: "Owner",
         }));
-    
+
         const permissions = user.permissions || [];
-    
+
         const permissionProjects = permissions
             .filter(permission =>
                 permission.project?.name?.toLowerCase().includes(search.toLowerCase()) &&
@@ -197,10 +213,10 @@ export default class ProjectService {
                 project: permission.project,
                 status: permission.permission?.toString(),
             }));
-    
+
         const allProjects = [...ownProjectsWithStatus, ...permissionProjects];
-    
+
         return allProjects;
     }
-    
+
 }
