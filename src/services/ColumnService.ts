@@ -54,4 +54,22 @@ export default class ColumnService {
 
         return savedColumn;
     }
+
+    public static getBySprint = async (sprintId: string): Promise<CardsColumn[]> => {
+
+        const columnRepo = AppDataSource.getRepository(CardsColumn);
+
+        const columns = await columnRepo.find({
+            where: {
+                sprint: {
+                    id: sprintId
+                }
+            },
+            relations: {
+                cards: true
+            }
+        });
+
+        return columns;
+    }
 }
