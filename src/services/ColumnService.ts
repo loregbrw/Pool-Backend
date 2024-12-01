@@ -67,6 +67,12 @@ export default class ColumnService {
             },
             relations: {
                 cards: true
+            },
+            order: {
+                index: 'ASC',
+                cards: {
+                    index: 'ASC'
+                }
             }
         });
 
