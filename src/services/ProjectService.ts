@@ -123,7 +123,9 @@ export default class ProjectService {
             where: { id: id },
             relations: {
                 user: true,
-                sprints: true,
+                sprints: {
+                    columns: true
+                },
                 permissions: true
             },
             order: {
