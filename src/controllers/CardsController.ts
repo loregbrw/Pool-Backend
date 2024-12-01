@@ -47,4 +47,15 @@ export default class CardsController {
         const cards = await CardService.getBySprintId(req.params.sprintId);
         return res.status(201).json({ cards });
     }
+
+    public static getByColumnId = async(req: Request, res: Response) => {
+
+        const userSession = (req as any).userSession;
+
+        if (!userSession)
+            throw new AppError("Unathorized!", 401);
+
+        const cards = await CardService.getByColumnId(req.params.columnId);
+        return res.status(201).json({ cards });
+    }
 }

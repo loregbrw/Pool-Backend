@@ -110,4 +110,27 @@ export default class CardService {
 
         return cards;
     }
+
+    public static getByColumnId = async (columnId: string) => {
+        
+        const cardRepo = AppDataSource.getRepository(Card);
+
+        const cards = await cardRepo.find({
+            where: {
+                column: {
+                    id: columnId
+                }
+            },
+            order: {
+                index: 'ASC'
+            },
+            relations: {
+                section: true,
+                tags: true,
+                users: true
+            }
+        });
+
+        return cards;
+    }
 }
