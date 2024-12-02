@@ -35,7 +35,7 @@ export default class ProjectsController {
         if (!userSession)
             throw new AppError("Unathorized!", 401);
 
-        const project = await ProjectService.getById(req.params.id, userSession.id);
-        return res.status(200).json({ project });
+        const { project, permission } = await ProjectService.getById(req.params.id, userSession.id);
+        return res.status(200).json({ project, permission });
     }
 }

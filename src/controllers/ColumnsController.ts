@@ -33,8 +33,8 @@ export default class ColumnsController {
         if (!userSession)
             throw new AppError("Unathorized!", 401);
 
-        const columns = await ColumnService.getBySprint(req.params.sprintId);
-        return res.status(201).json({ columns });
+        const { columns, progress } = await ColumnService.getBySprint(req.params.sprintId);
+        return res.status(201).json({ columns, progress });
     }
 
 }
