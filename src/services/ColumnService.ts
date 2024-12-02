@@ -70,29 +70,62 @@ export default class ColumnService {
         return savedColumn;
     }
 
-    public static getBySprint = async (sprintId: string) => {
-
+    public static getBySprintWithProgress = async (sprintId: string) => {
         const columnRepo = AppDataSource.getRepository(CardsColumn);
-
+    
         const columns = await columnRepo.find({
             where: {
                 sprint: {
-                    id: sprintId
-                }
+                    id: sprintId,
+                },
             },
             relations: {
                 cards: {
                     tags: true,
                     users: true,
-                    section: true
-                }
+                    section: true,
+                },
+                sections: {
+                    cards: {
+                        tags: true,
+                        users: true,
+                        section: true,
+                    },
+                },
             },
             order: {
-                index: 'ASC'
-            }
+                index: "ASC",
+            },
         });
-
-        return columns;
-    }
-
+    
+        let totalCards = 0;
+        let completedCards = 0;
+    
+        // Itera pelas colunas e cartões
+        columns.forEach((column) => {
+            column.cards?.forEach((card) => {
+                totalCards++;
+                if (card.status === true) {
+                    completedCards++;
+                }
+            });
+    
+            column.sections?.forEach((section) => {
+                section.cards?.forEach((card) => {
+                    totalCards++;
+                    if (card.status === true) {
+                        completedCards++;
+                    }
+                });
+            });
+        });
+    
+        const progress = totalCards > 0 ? (completedCards / totalCards) * 100 : 0;
+    
+        return {
+            columns,
+            progress: Math.round(progress * 100) / 100,
+        };
+    };
+    
 }
