@@ -70,7 +70,7 @@ export default class ColumnService {
         return savedColumn;
     }
 
-    public static getBySprintWithProgress = async (sprintId: string) => {
+    public static getBySprint = async (sprintId: string) => {
         const columnRepo = AppDataSource.getRepository(CardsColumn);
     
         const columns = await columnRepo.find({
@@ -95,13 +95,21 @@ export default class ColumnService {
             },
             order: {
                 index: "ASC",
+                cards: {
+                    index: "ASC"
+                },
+                sections: {
+                    index: "ASC",
+                    cards: {
+                        index: "ASC"
+                    }
+                }
             },
         });
     
         let totalCards = 0;
         let completedCards = 0;
     
-        // Itera pelas colunas e cartões
         columns.forEach((column) => {
             column.cards?.forEach((card) => {
                 totalCards++;
