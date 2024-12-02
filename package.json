@@ -38,10 +38,11 @@
     "express-async-errors": "^3.1.1",
     "express-rate-limit": "^7.4.1",
     "jsonwebtoken": "^9.0.2",
-    "mssql": "^10.0.4",
+    "mssql": "^11.0.1",
     "path": "^0.12.7",
     "pg": "^8.13.0",
     "reflect-metadata": "^0.2.2",
+    "socket.io": "^4.8.1",
     "typeorm": "^0.3.20",
     "zod": "^3.23.8"
   }

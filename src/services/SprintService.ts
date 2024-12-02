@@ -5,6 +5,7 @@ import Sprint from "../entities/Sprint.entity";
 import Project from "../entities/Project.entity";
 
 import { TSprintCreation, TSprintUpdate } from "../schemas/SprintSchemas";
+import { io } from "../server";
 
 export default class SprintService {
 
@@ -29,6 +30,8 @@ export default class SprintService {
         const sprint = sprintRepo.create({ ...payload, project: project, status: false });
         const createdSprint = await sprintRepo.save(sprint);
 
+        io.emit(`project_updated_${payload.projectId}`, { sprint: createdSprint });
+
         return createdSprint;
     }
 
@@ -45,7 +48,10 @@ export default class SprintService {
         // verificar se o usuario tem permição ou se é viewer
 
         const sprint = await sprintRepo.findOne({
-            where: { id: id }
+            where: { id: id },
+            relations: {
+                project: true
+            }
         });
 
         if (!sprint)
@@ -53,6 +59,8 @@ export default class SprintService {
 
         const updatedSprint = sprintRepo.create({ ...sprint, ...payload });
         const savedSprint = await sprintRepo.save(updatedSprint);
+
+        io.emit(`project_updated_${savedSprint.project?.id}`, { sprint: savedSprint });
 
         return savedSprint;
     }

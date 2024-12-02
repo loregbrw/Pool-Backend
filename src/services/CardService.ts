@@ -6,6 +6,7 @@ import Section from "../entities/Section.entity";
 import CardsColumn from "../entities/CardsColumn.entity";
 
 import { TCardCreation, TCardUpdate } from "../schemas/CardSchemas";
+import { io } from "../server";
 
 export default class CardService {
 
@@ -23,7 +24,14 @@ export default class CardService {
 
         if (payload.columnId) {
 
-            const column = await columnRepo.findOne({ where: { id: payload.columnId } });
+            const column = await columnRepo.findOne({ 
+                where: { id: payload.columnId },
+                relations: {
+                    sprint: {
+                        project: true
+                    }
+                }
+            });
 
             if (!column)
                 throw new AppError("Column not found!", 404);
@@ -31,12 +39,23 @@ export default class CardService {
             const card = cardRepo.create({ ...payload, column: column })
             const createdCard = await cardRepo.save(card);
 
+            io.emit(`project_updated_${column.sprint?.project?.id}`, { card: createdCard });
+
             return createdCard;
         }
 
         if (payload.sectionId) {
 
-            const section = await sectionRepo.findOne({ where: { id: payload.sectionId } });
+            const section = await sectionRepo.findOne({
+                where: { id: payload.sectionId },
+                relations: {
+                    column: {
+                        sprint: {
+                            project: true
+                        }
+                    }
+                }
+            });
 
             if (!section)
 
@@ -44,6 +63,8 @@ export default class CardService {
 
             const card = cardRepo.create({ ...payload, section: section })
             const createdCard = await cardRepo.save(card);
+
+            io.emit(`project_updated_${section.column?.sprint?.project?.id}`, { card: createdCard });
 
             return createdCard;
         }
@@ -63,7 +84,21 @@ export default class CardService {
             throw new AppError("Problem authenticating user!", 401);
 
         const card = await cardRepo.findOne({
-            where: { id: id }
+            where: { id: id },
+            relations: {
+                column: {
+                    sprint: {
+                        project: true
+                    }
+                },
+                section: {
+                    column: {
+                        sprint: {
+                            project: true
+                        }
+                    }
+                }
+            }
         })
 
         if (!card)
@@ -71,6 +106,8 @@ export default class CardService {
 
         const updatedCard = cardRepo.create({ ...card, ...payload });
         const savedCard = await cardRepo.save(updatedCard);
+
+        io.emit(`project_updated_${card.column?.sprint?.project?.id || card.section?.column?.sprint?.project}`, { card: savedCard });
 
         return savedCard;
 

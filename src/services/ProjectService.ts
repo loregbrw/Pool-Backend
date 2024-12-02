@@ -10,6 +10,7 @@ import { EPermission } from "../enums/EPermission.enum";
 import { TSprintCreation } from "../schemas/SprintSchemas";
 import { TProjectCreation, TProjectUpdate } from "../schemas/ProjectSchemas";
 import Sprint from "../entities/Sprint.entity";
+import { io } from "../server";
 
 export default class ProjectService {
 
@@ -85,6 +86,8 @@ export default class ProjectService {
         const updatedProject = projectRepo.create({ ...project, ...payload });
         const savedProject = await projectRepo.save(updatedProject);
 
+        io.emit(`project_updated_${savedProject.id}`, { project: savedProject });
+
         return { ...savedProject, user: undefined };
     }
 
@@ -106,6 +109,8 @@ export default class ProjectService {
             throw new AppError("Unathorized!", 401);
 
         await projectRepo.softDelete(id);
+
+        io.emit(`project_updated_${id}`);
     }
 
     public static getById = async (id: string, userId: string): Promise<{ project: Project, permission: string }> => {
@@ -123,9 +128,7 @@ export default class ProjectService {
             where: { id: id },
             relations: {
                 user: true,
-                sprints: {
-                    columns: true
-                },
+                sprints: true,
                 permissions: true
             },
             order: {

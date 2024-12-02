@@ -5,6 +5,7 @@ import Sprint from "../entities/Sprint.entity";
 import CardsColumn from "../entities/CardsColumn.entity";
 
 import { TColumnCreation, TColumnUpdate } from "../schemas/ColumnSchemas";
+import { io } from "../server";
 
 export default class ColumnService {
 
@@ -21,13 +22,20 @@ export default class ColumnService {
         if (!user)
             throw new AppError("Problem authenticating user!", 401);
 
-        const sprint = await sprintRepo.findOne({ where: { id: payload.sprintId } });
+        const sprint = await sprintRepo.findOne({
+            where: { id: payload.sprintId },
+            relations: {
+                project: true
+            }
+        });
 
         if (!sprint)
             throw new AppError("Sprint not found!", 404);
 
         const column = columnRepo.create({ name: payload.name, index: payload.index, sprint: sprint });
         const createdColumn = await columnRepo.save(column);
+
+        io.emit(`project_updated_${sprint.project?.id}`, { column: createdColumn });
 
         return createdColumn;
     }
@@ -43,7 +51,12 @@ export default class ColumnService {
             throw new AppError("Problem authenticating user!", 401);
 
         const column = await columnRepo.findOne({
-            where: { id: id }
+            where: { id: id },
+            relations: {
+                sprint: {
+                    project: true
+                }
+            }
         })
 
         if (!column)
@@ -52,7 +65,34 @@ export default class ColumnService {
         const updatedColumn = columnRepo.create({ ...column, ...payload });
         const savedColumn = await columnRepo.save(updatedColumn);
 
+        io.emit(`project_updated_${column.sprint?.project?.id}`, { column: savedColumn });
+        
         return savedColumn;
+    }
+
+    public static getBySprint = async (sprintId: string) => {
+
+        const columnRepo = AppDataSource.getRepository(CardsColumn);
+
+        const columns = await columnRepo.find({
+            where: {
+                sprint: {
+                    id: sprintId
+                }
+            },
+            relations: {
+                cards: {
+                    tags: true,
+                    users: true,
+                    section: true
+                }
+            },
+            order: {
+                index: 'ASC'
+            }
+        });
+
+        return columns;
     }
 
 }
