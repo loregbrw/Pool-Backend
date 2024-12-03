@@ -1,5 +1,4 @@
 import AppError from "../errors";
-import User from "../entities/User.entity";
 import Card from "../entities/Card.entity";
 import AppDataSource from "../data-source";
 import Section from "../entities/Section.entity";
@@ -7,6 +6,8 @@ import CardsColumn from "../entities/CardsColumn.entity";
 
 import { TCardCreation, TCardUpdate } from "../schemas/CardSchemas";
 import { io } from "../server";
+import CardTag from "../entities/CardTag";
+import { In } from "typeorm";
 
 export default class CardService {
 
@@ -70,27 +71,33 @@ export default class CardService {
         }
     }
 
-    public static update = async (id: string, payload: TCardUpdate, userId: string) => {
+    public static update = async (id: string, payload: TCardUpdate) => {
 
         const cardRepo = AppDataSource.getRepository(Card);
-        const userRepo = AppDataSource.getRepository(User);
+        const tagRepo = AppDataSource.getRepository(CardTag);
 
         if (payload.columnId && payload.sectionId)
             throw new AppError("Invalid parameters sectionId AND columnId", 400);
 
-        const user = await userRepo.findOne({ where: { id: userId } });
-
-        if (!user)
-            throw new AppError("Problem authenticating user!", 401);
-
         const card = await cardRepo.findOne({
             where: { id: id },
+            relations: {
+                tags: true
+            }
         })
 
+        let tags = card?.tags;
+
+        if (payload.tagsId) {
+            tags = await tagRepo.find({
+                where: { id: In(payload.tagsId) }
+            });
+        }
+        
         if (!card)
             throw new AppError("Card not found!", 404);
 
-        const updatedCard = cardRepo.create({ ...card, ...payload });
+        const updatedCard = cardRepo.create({ ...card, ...payload, tags: tags });
         const savedCard = await cardRepo.save(updatedCard);
 
         io.emit(`project_updated_${card.column?.sprint?.project?.id || card.section?.column?.sprint?.project}`, { card: savedCard });

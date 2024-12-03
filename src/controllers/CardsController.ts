@@ -22,7 +22,7 @@ export default class CardsController {
         if (!userSession)
             throw new AppError("Unathorized!", 401);
 
-        const card = await CardService.update(req.params.id, req.body, userSession.id);
+        const card = await CardService.update(req.params.id, req.body);
         return res.status(201).json({ card });
     }
 
