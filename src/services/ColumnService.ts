@@ -51,12 +51,7 @@ export default class ColumnService {
             throw new AppError("Problem authenticating user!", 401);
 
         const column = await columnRepo.findOne({
-            where: { id: id },
-            relations: {
-                sprint: {
-                    project: true
-                }
-            }
+            where: { id: id }
         })
 
         if (!column)

@@ -85,20 +85,6 @@ export default class CardService {
 
         const card = await cardRepo.findOne({
             where: { id: id },
-            relations: {
-                column: {
-                    sprint: {
-                        project: true
-                    }
-                },
-                section: {
-                    column: {
-                        sprint: {
-                            project: true
-                        }
-                    }
-                }
-            }
         })
 
         if (!card)
