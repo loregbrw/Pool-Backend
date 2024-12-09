@@ -144,44 +144,48 @@ export default class SprintService {
 
         const sprintRepo = AppDataSource.getRepository(Sprint);
         const columnRepo = AppDataSource.getRepository(CardsColumn);
-
+    
         const sprint = await sprintRepo.findOne({
-            where: { id: id },
+            where: { id },
             relations: {
                 columns: {
-                    cards: true
-                }
+                    cards: true,
+                },
             },
             order: {
                 columns: {
                     index: "ASC",
                     cards: {
-                        index: "ASC"
-                    }
-                }
+                        index: "ASC",
+                    },
+                },
             },
         });
-
-        if (!sprint)
-            throw new AppError("Sprint not found!");
-
-        const columns: CardsColumn[] = [];
-
-        payload.columns.map(async (col, index) => {
+    
+        if (!sprint) throw new AppError("Sprint not found!");
+    
+        const updatedColumns: CardsColumn[] = [];
+    
+        for (const [index, colId] of payload.columns.entries()) {
             const column = await columnRepo.findOne({
-                where: { id: id }
+                where: { id: colId },
+                relations: {
+                    cards: true,
+                },
             });
-
-            if (!column)
-                throw new AppError("Column not found!");
-
+    
+            if (!column) throw new AppError("Column not found!", 404);
+    
             column.index = index;
-
-            columns.push(column);
-        })
-
-        await sprintRepo.save({ ...sprint, columns: columns });
-
+            updatedColumns.push(column);
+        }
+    
+        await columnRepo.save(updatedColumns);
+    
+        sprint.columns = updatedColumns;
+        await sprintRepo.save(sprint);
+    
         return sprint;
     };
+    
 }
