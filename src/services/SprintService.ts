@@ -4,8 +4,9 @@ import User from "../entities/User.entity";
 import Sprint from "../entities/Sprint.entity";
 import Project from "../entities/Project.entity";
 
-import { TSprintCreation, TSprintUpdate } from "../schemas/SprintSchemas";
+import { TSprintCreation, TSprintReorder, TSprintUpdate } from "../schemas/SprintSchemas";
 import { io } from "../server";
+import CardsColumn from "../entities/CardsColumn.entity";
 
 export default class SprintService {
 
@@ -99,4 +100,33 @@ export default class SprintService {
 
         return sprints;
     }
+
+    public static reorderColumns = async (id: string, payload: TSprintReorder) => {
+        
+        const sprintRepo = AppDataSource.getRepository(Sprint);
+        const columnRepo = AppDataSource.getRepository(CardsColumn);
+    
+        const sprint = await sprintRepo.findOne({
+            where: { id: id },
+            order: { columns:{
+                index: "ASC"
+            }},
+        });
+
+        const columns = sprint?.columns || [];
+        const movedColumn = columns.find((col) => col.id === payload.columnId);
+
+        if (!movedColumn)
+            throw new AppError("Column not found!", 404);
+    
+        columns.splice(columns.indexOf(movedColumn), 1);
+        columns.splice(payload.newIndex, 0, movedColumn);
+    
+        for (let i = 0; i < columns.length; i++) {
+            columns[i].index = i;
+            await columnRepo.save(columns[i]);
+        }
+    
+        return sprint;
+    };
 }

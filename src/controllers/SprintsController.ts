@@ -44,4 +44,14 @@ export default class SprintsController {
         const sprint = await SprintService.getByProject(req.params.projectId);
         return res.status(200).json({ sprint });
     }
+
+    public static reorderColumns = async (req: Request, res: Response) => {
+        const userSession = (req as any).userSession;
+
+        if (!userSession)
+            throw new AppError("Unathorized!", 401);
+
+        const sprint = await SprintService.reorderColumns(req.params.id, req.body);
+        return res.status(200).json({ sprint });
+    }
 } 
