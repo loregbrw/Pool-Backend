@@ -102,15 +102,25 @@ export default class SprintService {
     }
 
     public static reorderColumns = async (id: string, payload: TSprintReorder) => {
-        
+
         const sprintRepo = AppDataSource.getRepository(Sprint);
         const columnRepo = AppDataSource.getRepository(CardsColumn);
-    
+
         const sprint = await sprintRepo.findOne({
             where: { id: id },
-            order: { columns:{
-                index: "ASC"
-            }},
+            relations: {
+                columns: {
+                    cards: true
+                }
+            },
+            order: {
+                columns: {
+                    index: "ASC",
+                    cards: {
+                        index: "ASC"
+                    }
+                }
+            },
         });
 
         const columns = sprint?.columns || [];
@@ -118,15 +128,15 @@ export default class SprintService {
 
         if (!movedColumn)
             throw new AppError("Column not found!", 404);
-    
+
         columns.splice(columns.indexOf(movedColumn), 1);
         columns.splice(payload.newIndex, 0, movedColumn);
-    
+
         for (let i = 0; i < columns.length; i++) {
             columns[i].index = i;
             await columnRepo.save(columns[i]);
         }
-    
+
         return sprint;
     };
 }
