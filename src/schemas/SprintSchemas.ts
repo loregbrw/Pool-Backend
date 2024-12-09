@@ -12,14 +12,19 @@ export default class SprintSchema {
         duration: z.number()
     });
 
-    public static reorder = z.object({
+    public static moveColumn = z.object({
         columnId: z.string().uuid(),
         newIndex: z.number()
+    });
+
+    public static reorderColumns = z.object({
+        columns: z.array(z.string().uuid())
     });
 
     public static update = SprintSchema.creation.partial();
 }
 
 export type TSprintCreation = z.infer<typeof SprintSchema.creation>;
-export type TSprintReorder = z.infer<typeof SprintSchema.reorder>;
+export type TSprintMoveColumn = z.infer<typeof SprintSchema.moveColumn>;
+export type TSprintReorderColumns = z.infer<typeof SprintSchema.reorderColumns>;
 export type TSprintUpdate = z.infer<typeof SprintSchema.update>;

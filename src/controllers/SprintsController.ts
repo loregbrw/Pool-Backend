@@ -45,13 +45,23 @@ export default class SprintsController {
         return res.status(200).json({ sprint });
     }
 
+    public static moveColumn = async (req: Request, res: Response) => {
+        const userSession = (req as any).userSession;
+
+        if (!userSession)
+            throw new AppError("Unathorized!", 401);
+
+        const sprint = await SprintService.moveColumn(req.params.id, req.body);
+        return res.status(200).json({ sprint });
+    }
+
     public static reorderColumns = async (req: Request, res: Response) => {
         const userSession = (req as any).userSession;
 
         if (!userSession)
             throw new AppError("Unathorized!", 401);
 
-        const sprint = await SprintService.reorderColumns(req.params.id, req.body);
+        const sprint = await SprintService.reorderColumn(req.params.id, req.body);
         return res.status(200).json({ sprint });
     }
 } 

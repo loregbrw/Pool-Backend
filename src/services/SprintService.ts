@@ -4,9 +4,9 @@ import User from "../entities/User.entity";
 import Sprint from "../entities/Sprint.entity";
 import Project from "../entities/Project.entity";
 
-import { TSprintCreation, TSprintReorder, TSprintUpdate } from "../schemas/SprintSchemas";
 import { io } from "../server";
 import CardsColumn from "../entities/CardsColumn.entity";
+import { TSprintReorderColumns, TSprintCreation, TSprintMoveColumn, TSprintUpdate } from "../schemas/SprintSchemas";
 
 export default class SprintService {
 
@@ -101,7 +101,7 @@ export default class SprintService {
         return sprints;
     }
 
-    public static reorderColumns = async (id: string, payload: TSprintReorder) => {
+    public static moveColumn = async (id: string, payload: TSprintMoveColumn) => {
 
         const sprintRepo = AppDataSource.getRepository(Sprint);
         const columnRepo = AppDataSource.getRepository(CardsColumn);
@@ -136,6 +136,51 @@ export default class SprintService {
             columns[i].index = i;
             await columnRepo.save(columns[i]);
         }
+
+        return sprint;
+    };
+
+    public static reorderColumn = async (id: string, payload: TSprintReorderColumns) => {
+
+        const sprintRepo = AppDataSource.getRepository(Sprint);
+        const columnRepo = AppDataSource.getRepository(CardsColumn);
+
+        const sprint = await sprintRepo.findOne({
+            where: { id: id },
+            relations: {
+                columns: {
+                    cards: true
+                }
+            },
+            order: {
+                columns: {
+                    index: "ASC",
+                    cards: {
+                        index: "ASC"
+                    }
+                }
+            },
+        });
+
+        if (!sprint)
+            throw new AppError("Sprint not found!");
+
+        const columns: CardsColumn[] = [];
+
+        payload.columns.map(async (col, index) => {
+            const column = await columnRepo.findOne({
+                where: { id: id }
+            });
+
+            if (!column)
+                throw new AppError("Column not found!");
+
+            column.index = index;
+
+            columns.push(column);
+        })
+
+        await sprintRepo.save({ ...sprint, columns: columns });
 
         return sprint;
     };
