@@ -229,7 +229,6 @@ export default class CardService {
         });
 
         await columnRepo.save([sourceColumn, destColumn]);
-        await cardRepo.save([...sourceColumn.cards, ...destColumn.cards]);
 
         return card.column!.sprint;
     }
