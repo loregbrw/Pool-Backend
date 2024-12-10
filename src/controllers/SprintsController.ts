@@ -22,7 +22,7 @@ export default class SprintsController {
             throw new AppError("Unathorized!", 401);
 
         const sprint = await SprintService.update(req.params.id, req.body, userSession.id);
-        return res.status(201).json({ sprint });
+        return res.status(200).json({ sprint });
     }
 
     public static getById = async (req: Request, res: Response) => {

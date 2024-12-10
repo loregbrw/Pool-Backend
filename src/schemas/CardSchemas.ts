@@ -15,8 +15,14 @@ export default class CardSchemas {
         tagsId: z.array(z.string().uuid())
     });
 
+    public static move = z.object({
+        destColumnId: z.string().uuid(),
+        newIndex: z.number()
+    })
+
     public static update = CardSchemas.creation.partial();
 }
 
 export type TCardCreation = z.infer<typeof CardSchemas.creation>;
+export type TCardMove = z.infer<typeof CardSchemas.move>;
 export type TCardUpdate = z.infer<typeof CardSchemas.update>;

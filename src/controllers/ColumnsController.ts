@@ -23,7 +23,7 @@ export default class ColumnsController {
             throw new AppError("Unathorized!", 401);
 
         const column = await ColumnService.update(req.params.id, req.body, userSession.id);
-        return res.status(201).json({ column });
+        return res.status(200).json({ column });
     }
 
     public static getBySprint = async (req: Request, res: Response) => {
@@ -34,7 +34,7 @@ export default class ColumnsController {
             throw new AppError("Unathorized!", 401);
 
         const { columns, progress } = await ColumnService.getBySprint(req.params.sprintId);
-        return res.status(201).json({ columns, progress });
+        return res.status(200).json({ columns, progress });
     }
 
 }

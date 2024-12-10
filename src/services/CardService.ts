@@ -4,7 +4,7 @@ import AppDataSource from "../data-source";
 import Section from "../entities/Section.entity";
 import CardsColumn from "../entities/CardsColumn.entity";
 
-import { TCardCreation, TCardUpdate } from "../schemas/CardSchemas";
+import { TCardCreation, TCardMove, TCardUpdate } from "../schemas/CardSchemas";
 import { io } from "../server";
 import CardTag from "../entities/CardTag";
 import { In } from "typeorm";
@@ -25,7 +25,7 @@ export default class CardService {
 
         if (payload.columnId) {
 
-            const column = await columnRepo.findOne({ 
+            const column = await columnRepo.findOne({
                 where: { id: payload.columnId },
                 relations: {
                     sprint: {
@@ -93,7 +93,7 @@ export default class CardService {
                 where: { id: In(payload.tagsId) }
             });
         }
-        
+
         if (!card)
             throw new AppError("Card not found!", 404);
 
@@ -125,7 +125,7 @@ export default class CardService {
     }
 
     public static getBySprintId = async (sprintId: string) => {
-        
+
         const cardRepo = AppDataSource.getRepository(Card);
 
         const cards = await cardRepo.find({
@@ -142,7 +142,7 @@ export default class CardService {
     }
 
     public static getByColumnId = async (columnId: string) => {
-        
+
         const cardRepo = AppDataSource.getRepository(Card);
 
         const cards = await cardRepo.find({
@@ -162,5 +162,67 @@ export default class CardService {
         });
 
         return cards;
+    }
+
+    public static moveCard = async (id: string, payload: TCardMove) => {
+
+        const columnRepo = AppDataSource.getRepository(CardsColumn);
+        const cardRepo = AppDataSource.getRepository(Card);
+
+        const card = await cardRepo.findOne({
+            where: {
+                id
+            },
+            relations: {
+                column: true
+            },
+            order: {
+                column: {
+                    cards: {
+                        index: "ASC"
+                    }
+                }
+            }
+        });
+
+        if (!card) throw new AppError("Card not found!", 404);
+
+        const sourceColumn = card.column;
+        if (!sourceColumn) throw new AppError("Source column not found!", 404);
+
+        const destColumn = await columnRepo.findOne({
+            where: {
+                id: payload.destColumnId
+            },
+            relations: {
+                cards: true
+            },
+            order: {
+                cards: {
+                    index: "ASC"
+                }
+            }
+        });
+
+        if (!destColumn) throw new AppError("Destination column not found!", 404);
+
+        sourceColumn.cards = sourceColumn.cards || [];
+        destColumn.cards = destColumn.cards || [];
+
+        sourceColumn.cards = sourceColumn.cards.filter((c) => c.id !== id);
+
+        sourceColumn.cards.forEach((c, index) => {
+            c.index = index;
+        });
+
+        const newIndex = payload.newIndex ?? destColumn.cards.length;
+        destColumn.cards.splice(newIndex, 0, card);
+
+        destColumn.cards.forEach((c, index) => {
+            c.index = index;
+        });
+
+        await columnRepo.save([sourceColumn, destColumn]);
+        await cardRepo.save([...sourceColumn.cards, ...destColumn.cards]);
     }
 }
