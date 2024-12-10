@@ -66,7 +66,7 @@ export default class CardsController {
         if (!userSession)
             throw new AppError("Unathorized!", 401);
 
-        const cards = await CardService.moveCard(req.params.id, req.body);
-        return res.status(200);
+        const sprint = await CardService.moveCard(req.params.id, req.body);
+        return res.status(200).json({ sprint });
     }
 }

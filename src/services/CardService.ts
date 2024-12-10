@@ -8,6 +8,7 @@ import { TCardCreation, TCardMove, TCardUpdate } from "../schemas/CardSchemas";
 import { io } from "../server";
 import CardTag from "../entities/CardTag";
 import { In } from "typeorm";
+import Sprint from "../entities/Sprint.entity";
 
 export default class CardService {
 
@@ -168,13 +169,16 @@ export default class CardService {
 
         const columnRepo = AppDataSource.getRepository(CardsColumn);
         const cardRepo = AppDataSource.getRepository(Card);
+        const sprintRepo = AppDataSource.getRepository(Sprint);
 
         const card = await cardRepo.findOne({
             where: {
                 id
             },
             relations: {
-                column: true
+                column: {
+                    sprint: true
+                }
             },
             order: {
                 column: {
@@ -224,5 +228,24 @@ export default class CardService {
 
         await columnRepo.save([sourceColumn, destColumn]);
         await cardRepo.save([...sourceColumn.cards, ...destColumn.cards]);
+
+        return await sprintRepo.findOne({
+            where: {
+                id: card.column!.sprint!.id
+            },
+            relations: {
+                columns: {
+                    cards: true,
+                },
+            },
+            order: {
+                columns: {
+                    index: "ASC",
+                    cards: {
+                        index: "ASC",
+                    },
+                },
+            },
+        });
     }
 }
