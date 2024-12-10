@@ -59,14 +59,14 @@ export default class CardsController {
         return res.status(200).json({ cards });
     }
 
-    public static move = async(req: Request, res: Response) => {
+    public static moveCard = async(req: Request, res: Response) => {
 
         const userSession = (req as any).userSession;
 
         if (!userSession)
             throw new AppError("Unathorized!", 401);
 
-        const sprint = await CardService.moveCard(req.params.id, req.body);
-        return res.status(200).json({ sprint });
+        await CardService.moveCard(req.params.id, req.body);
+        return res.status(200);
     }
 }
