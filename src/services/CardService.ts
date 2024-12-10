@@ -174,28 +174,26 @@ export default class CardService {
                 id: id
             },
             relations: {
-                column: {
-                    sprint: true,
-                    cards: true
-                }
-            },
-            order: {
-                column: {
-                    cards: {
-                        index: "ASC"
-                    },
-                    sprint: {
-                        columns: {
-                            index: "ASC"
-                        }
-                    }
-                }
+                column: true
             }
         });
 
         if (!card) throw new AppError("Card not found!", 404);
 
-        const sourceColumn = card.column;
+        const sourceColumn = await columnRepo.findOne({
+            where: {
+                id: card.column!.id
+            },
+            relations: {
+                cards: true
+            },
+            order: {
+                cards: {
+                    index: "ASC"
+                }
+            }
+        });
+        
         if (!sourceColumn) throw new AppError("Source column not found!", 404);
 
         const destColumn = await columnRepo.findOne({
@@ -229,7 +227,6 @@ export default class CardService {
         });
 
         await columnRepo.save([sourceColumn, destColumn]);
-
         return card.column!.sprint;
     }
 
