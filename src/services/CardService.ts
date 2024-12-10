@@ -166,23 +166,24 @@ export default class CardService {
     }
 
     public static moveCard = async (id: string, payload: TCardMove) => {
-
         const columnRepo = AppDataSource.getRepository(CardsColumn);
         const cardRepo = AppDataSource.getRepository(Card);
 
         const card = await cardRepo.findOne({
             where: {
-                id
+                id: id
             },
             relations: {
                 column: {
-                    sprint: true
+                    sprint: true,
+                    cards: true
                 }
             },
             order: {
                 column: {
-                    cards: {
-                        index: "ASC"
+                    cards: "ASC",
+                    sprint: {
+                        columns: "ASC"
                     }
                 }
             }
@@ -201,9 +202,7 @@ export default class CardService {
                 cards: true
             },
             order: {
-                cards: {
-                    index: "ASC"
-                }
+                cards: "ASC"
             }
         });
 
@@ -213,19 +212,20 @@ export default class CardService {
         destColumn.cards = destColumn.cards || [];
 
         sourceColumn.cards = sourceColumn.cards.filter((c) => c.id !== id);
-
         sourceColumn.cards.forEach((c, index) => {
             c.index = index;
         });
 
         const newIndex = payload.newIndex ?? destColumn.cards.length;
         destColumn.cards.splice(newIndex, 0, card);
-
         destColumn.cards.forEach((c, index) => {
             c.index = index;
         });
 
         await columnRepo.save([sourceColumn, destColumn]);
         await cardRepo.save([...sourceColumn.cards, ...destColumn.cards]);
+
+        return card.column!.sprint;
     }
+
 }
