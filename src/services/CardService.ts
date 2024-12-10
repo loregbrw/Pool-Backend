@@ -181,9 +181,13 @@ export default class CardService {
             },
             order: {
                 column: {
-                    cards: "ASC",
+                    cards: {
+                        index: "ASC"
+                    },
                     sprint: {
-                        columns: "ASC"
+                        columns: {
+                            index: "ASC"
+                        }
                     }
                 }
             }
@@ -202,7 +206,9 @@ export default class CardService {
                 cards: true
             },
             order: {
-                cards: "ASC"
+                cards: {
+                    index: "ASC"
+                }
             }
         });
 
