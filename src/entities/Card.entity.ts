@@ -19,7 +19,7 @@ export default class Card extends BaseEntity {
     @Column()
     status?: boolean;
 
-    @ManyToOne(() => CardsColumn, { cascade: true, nullable: true })
+    @ManyToOne(() => CardsColumn, { nullable: true })
     column?: CardsColumn;
 
     @Column()
