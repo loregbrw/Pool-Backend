@@ -67,6 +67,6 @@ export default class CardsController {
             throw new AppError("Unathorized!", 401);
 
         await CardService.moveCard(req.params.id, req.body);
-        return res.status(200);
+        return res.status(200).send();
     }
 }
