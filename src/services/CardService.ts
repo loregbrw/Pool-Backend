@@ -165,11 +165,14 @@ export default class CardService {
         return cards;
     }
 
-    private static updateIndex = (cards: Card[]) => {
-        cards.forEach((card, index) => {
-            card.index = index;
-        });
-    }
+    private static updateIndex = async (cards: Card[]) => {
+        const cardRepo = AppDataSource.getRepository(Card);
+    
+        for (const card of cards) {
+            card.index = cards.indexOf(card);
+            await cardRepo.save(card);
+        }
+    };
 
     public static moveCard = async (id: string, payload: TCardMove) => {
         
