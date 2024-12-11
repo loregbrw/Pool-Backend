@@ -15,7 +15,7 @@ export default class CardsColumn extends BaseEntity {
     @ManyToOne(() => Sprint, { cascade: true })
     sprint?: Sprint;
 
-    @OneToMany(() => Card, (c) => c.column, { cascade: true })
+    @OneToMany(() => Card, (c) => c.column)
     cards?: Card[];
 
     @OneToMany(() => Section, (s) => s.column)

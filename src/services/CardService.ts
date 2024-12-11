@@ -165,7 +165,14 @@ export default class CardService {
         return cards;
     }
 
+    private static updateIndex = (cards: Card[]) => {
+        cards.forEach((card, index) => {
+            card.index = index;
+        });
+    }
+
     public static moveCard = async (id: string, payload: TCardMove) => {
+        
         const columnRepo = AppDataSource.getRepository(CardsColumn);
         const cardRepo = AppDataSource.getRepository(Card);
 
@@ -179,10 +186,11 @@ export default class CardService {
         });
 
         if (!card) throw new AppError("Card not found!", 404);
+        if (!card.column) throw new AppError("Card column is undefined!", 500);
 
         const sourceColumn = await columnRepo.findOne({
             where: {
-                id: card.column!.id
+                id: card.column.id
             },
             relations: {
                 cards: true
@@ -193,8 +201,22 @@ export default class CardService {
                 }
             }
         });
-        
-        if (!sourceColumn) throw new AppError("Source column not found!", 404);
+
+        if (!sourceColumn) throw new AppError("Internal server error!", 500);
+
+        if (payload.destColumnId == sourceColumn.id) {
+
+            const newCards = sourceColumn.cards || [];
+
+            newCards.splice(card.index!, 1);
+            newCards.splice(payload.newIndex, 0, card);
+            newCards.forEach((card, index) => (card.index = index));
+
+            sourceColumn.cards = newCards;
+
+            await columnRepo.save(sourceColumn);
+            return;
+        }
 
         const destColumn = await columnRepo.findOne({
             where: {
@@ -216,18 +238,14 @@ export default class CardService {
         destColumn.cards = destColumn.cards || [];
 
         sourceColumn.cards = sourceColumn.cards.filter((c) => c.id !== id);
-        sourceColumn.cards.forEach((c, index) => {
-            c.index = index;
-        });
+        this.updateIndex(sourceColumn.cards);
 
-        const newIndex = payload.newIndex ?? destColumn.cards.length;
+        const newIndex = payload.newIndex > destColumn.cards.length ? destColumn.cards.length : payload.newIndex;
+
         destColumn.cards.splice(newIndex, 0, card);
-        destColumn.cards.forEach((c, index) => {
-            c.index = index;
-        });
+        this.updateIndex(destColumn.cards);
 
-        await columnRepo.save([sourceColumn, destColumn]);
-        return card.column!.sprint;
+        await columnRepo.save(sourceColumn);
+        await columnRepo.save(destColumn);
     }
-
 }

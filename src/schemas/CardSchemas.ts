@@ -17,7 +17,7 @@ export default class CardSchemas {
 
     public static move = z.object({
         destColumnId: z.string().uuid(),
-        newIndex: z.number()
+        newIndex: z.number().min(0)
     })
 
     public static update = CardSchemas.creation.partial();
