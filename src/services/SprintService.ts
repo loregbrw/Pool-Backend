@@ -73,7 +73,21 @@ export default class SprintService {
         const sprint = await sprintRepo.findOne({
             where: { id: id },
             relations: {
-                columns: true
+                columns: {
+                    cards: {
+                        tags: true,
+                        users: true,
+                        section: true
+                    }
+                }
+            },
+            order: {
+                columns: {
+                    index: "ASC",
+                    cards: {
+                        index: "ASC"
+                    }
+                }
             }
         })
 
